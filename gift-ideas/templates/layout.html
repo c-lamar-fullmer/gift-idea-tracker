@@ -8,8 +8,12 @@
 </head>
 
 <body>
+  <h2>Gift List Tracker</h2>
   <div>
     {% block content %}{% endblock %}
   </div>
+  <p><a href="{{ url_for('home') }}">Home</a></p>
+  <p><a href="{{ url_for('search') }}">Search</a></p>
+  <p><a href="{{ url_for('edit_person') }}">Edit Gift Lists</a></p>
 </body>
 </html>

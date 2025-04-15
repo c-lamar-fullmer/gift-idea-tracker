@@ -1,8 +1,10 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, session
 
 app = Flask(__name__)
 
-people_gifts = {
+app.secret_key='secret1'
+
+people_gift_list = {
     "LaMar": ['toys', 'shoes'],
     "Gus": ["ipad", 'wallet', 'shoes'],
     "Daphny": ['necklace', 'books'],
@@ -14,7 +16,7 @@ def search_matching(query):
 
     results = []
     query_lower = query.lower()
-    for name, items_lst in people_gifts.items():
+    for name, items_lst in session['people_gift_list'].items():
         matching_items = [item for item in items_lst if query_lower in item.lower()]
         if matching_items:
             results.append({'name': name, 'items_lst': matching_items})
@@ -23,14 +25,20 @@ def search_matching(query):
 def highlight(text, term):
     return text.replace(term, f'<strong>{term}</strong>')
 
+@app.before_request
+def initialize_session():
+    if 'people_gift_list' not in session:
+        session['people_gift_list'] = people_gift_list
+        # session['people_gift_list'] = []
+
 @app.route("/")
 def home():
-    return render_template('home.html', people=people_gifts)
+    return render_template('home.html', people=session['people_gift_list'])
 
 @app.route("/person/<name>")
 def person(name):
-    if name in people_gifts:
-        return render_template('name.html', name=name, people_gifts=people_gifts)
+    if name in session['people_gift_list']:
+        return render_template('name.html', name=name, people_gifts=session['people_gift_list'])
     else:
         return redirect(url_for('home'))
 
