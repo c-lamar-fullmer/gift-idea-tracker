@@ -2,6 +2,44 @@
 
 {% block content %}
 <h2>Edit People and Gifts</h2>
-<p>This page will eventually have features to edit people and their gifts.</p>
-<p><a href="{{ url_for('home') }}">Return to Home</a></p>
+<p>This is where you edit people and their gifts.</p>
+
+<section id="todos">
+    <header>
+        <h2>Editing [insert name]</h2>
+    </header>
+</section>
+
+<div>
+<form action="{{ url_for('update_person') }}" method="post">
+    <dl>
+        <dt>
+            <label for="name">Enter the Name:</label>
+        </dt>
+        <dd>
+            <input type="text" name="name" placeholder="Name"
+                value="[insert current name if available]" size="50">
+        </dd>
+
+        <dt>
+            <label for="gifts">Enter your ideas, one line at a time:</label>
+        </dt>
+        <dd>
+            <textarea name="gifts" placeholder="Add your list here" rows="10" 
+            cols="50">[insert current list, with each item on a new line, if available]
+            </textarea>
+        </dd>
+    </dl>
+    <fieldset>
+        <input type="submit" value="Save">
+        <a href="{{ url_for('home') }}">Cancel</a>
+    </fieldset>
+</form>
+</div>
+
+<div>
+<form action="{{ url_for('delete_person') }}" method="post">
+    <button type="submit">Delete Person</button>
+</form>
+</div>
 {% endblock %}

@@ -40,10 +40,18 @@ def search():
     results = search_matching(query)
     return render_template('search.html', query=query, results=results)
 
-# Define the missing 'edit_page' route (for now, it just redirects to home)
 @app.route("/edit_person")
 def edit_person():
-    return render_template('edit_person.html') # You'll need to create this template
+    return render_template('edit_person.html')
+
+@app.route("/edit_person", methods=["POST"])
+def delete_person():
+    return redirect(url_for('edit_person'))
+
+@app.route("/edit_person", methods=["POST"])
+def update_person():
+    return redirect(url_for('edit_person'))
+
 
 @app.errorhandler(404)
 def page_not_found(error):
