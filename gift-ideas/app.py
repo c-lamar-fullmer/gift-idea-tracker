@@ -1,14 +1,17 @@
-from flask import Flask, render_template, redirect, request, url_for, session
+from uuid import uuid4
+
+from flask import (
+    Flask,
+    render_template,
+    redirect,
+    request,
+    url_for,
+    session,
+    )
 
 app = Flask(__name__)
 
 app.secret_key='secret1'
-
-people_gift_list = {
-    "LaMar": ['toys', 'shoes'],
-    "Gus": ["ipad", 'wallet', 'shoes'],
-    "Daphny": ['necklace', 'books'],
-}
 
 def search_matching(query):
     if not query:
@@ -16,10 +19,10 @@ def search_matching(query):
 
     results = []
     query_lower = query.lower()
-    for name, items_lst in session['people_gift_list'].items():
-        matching_items = [item for item in items_lst if query_lower in item.lower()]
+    for person in session['people_gift_list']:
+        matching_items = [item for item in person['gift_lst'] if query_lower in item.lower()]
         if matching_items:
-            results.append({'name': name, 'items_lst': matching_items})
+            results.append({'name': person['name'], 'items_lst': matching_items})
     return results
 
 def highlight(text, term):
@@ -27,9 +30,16 @@ def highlight(text, term):
 
 @app.before_request
 def initialize_session():
-    if 'people_gift_list' not in session:
-        session['people_gift_list'] = people_gift_list
-        # session['people_gift_list'] = []
+    session['people_gift_list'] = [
+        {'id': str(uuid4()),
+         'name': "LaMar",
+         'gift_lst': ['toys', 'shoes']
+         },
+         {'id': str(uuid4()),
+         'name': "Gus",
+         'gift_lst': ['books', 'puzzles']
+         },
+         ]
 
 @app.route("/")
 def home():
@@ -37,8 +47,11 @@ def home():
 
 @app.route("/person/<name>")
 def person(name):
-    if name in session['people_gift_list']:
-        return render_template('name.html', name=name, people_gifts=session['people_gift_list'])
+    for person in session['people_gift_list']:
+        if person['name'] == name:
+            name = person['name']
+            gift_lst = person['gift_lst']
+            return render_template('name.html', name=name, gift_lst=gift_lst)
     else:
         return redirect(url_for('home'))
 
@@ -52,14 +65,9 @@ def search():
 def edit_person():
     return render_template('edit_person.html')
 
-@app.route("/edit_person", methods=["POST"])
-def delete_person():
-    return redirect(url_for('edit_person'))
-
-@app.route("/edit_person", methods=["POST"])
-def update_person():
-    return redirect(url_for('edit_person'))
-
+# @app.route("/edit_person", methods=["POST"])
+# def delete_person():
+#     return redirect(url_for('edit_person'))
 
 @app.errorhandler(404)
 def page_not_found(error):

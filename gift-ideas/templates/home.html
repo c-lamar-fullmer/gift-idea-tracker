@@ -2,9 +2,9 @@
 
 {% block content %}
 <ul>
-    {% for name, gifts in people.items() %}
+    {% for person in people %}
     <li>
-        <a href="{{ url_for('person', name=name) }}">{{ name }}</a>
+        <a href="{{ url_for('person', name=person['name']) }}">{{ person['name'] }}</a>
     </li>
     {% endfor %}
 </ul>
