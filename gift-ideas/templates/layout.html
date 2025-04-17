@@ -12,8 +12,9 @@
   <div>
     {% block content %}{% endblock %}
   </div>
-  <p><a href="{{ url_for('home') }}">Home</a></p>
+  <p><a href="{{ url_for('add_person') }}">Add New Person</a></p>
+  <p><a href="{{ url_for('edit_list') }}">Edit Gift Lists</a></p>
   <p><a href="{{ url_for('search') }}">Search</a></p>
-  <p><a href="{{ url_for('edit_person') }}">Edit Gift Lists</a></p>
+  <p><a href="{{ url_for('home') }}">Home</a></p>
 </body>
 </html>

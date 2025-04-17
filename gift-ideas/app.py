@@ -13,6 +13,11 @@ app = Flask(__name__)
 
 app.secret_key='secret1'
 
+def find_person(name):
+    for person in session['people_gift_list']:
+        if person['name'] == name:
+            return person
+
 def search_matching(query):
     if not query:
         return []
@@ -45,7 +50,7 @@ def initialize_session():
 def home():
     return render_template('home.html', people=session['people_gift_list'])
 
-@app.route("/person/<name>")
+@app.route("/<name>")
 def person(name):
     for person in session['people_gift_list']:
         if person['name'] == name:
@@ -61,13 +66,27 @@ def search():
     results = search_matching(query)
     return render_template('search.html', query=query, results=results)
 
-@app.route("/edit_person")
-def edit_person():
-    return render_template('edit_person.html')
+@app.route("/edit")
+def edit_list():
+    return render_template('edit_list.html', people=session['people_gift_list'])
+
+@app.route("/edit/<name>")
+def edit_person(name):
+    person = find_person(name)
+    name = person['name']
+    formatted_gift_lst = '\n'.join(person['gift_lst'])
+    return render_template('edit_person.html',
+                           name=name,
+                           gift_lst=formatted_gift_lst
+                           )
 
 # @app.route("/edit_person", methods=["POST"])
 # def delete_person():
 #     return redirect(url_for('edit_person'))
+
+@app.route("/edit/add_person")
+def add_person():
+    return render_template('add_person.html')
 
 @app.errorhandler(404)
 def page_not_found(error):

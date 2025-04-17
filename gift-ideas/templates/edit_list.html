@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Edit Your Gift Lists</h2>
+<p>Click on the name of the person you'd like to edit.</p>
+
+<ul>
+    {% for person in people %}
+    <li>
+        <a href="{{ url_for('edit_person', name=person['name']) }}">{{ person['name'] }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
